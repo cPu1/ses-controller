@@ -5,11 +5,25 @@ ignore:
 #    - CustomVerificationEmailTemplate
     - ReceiptFilter
     - ReceiptRule
-    - ReceiptRuleSet
+#    - ReceiptRuleSet
     - Template
 model_name: email
 
 resources:
+  ReceiptRuleSet:
+    fields:
+      RuleSetName:
+        is_primary_key: true
+        is_immutable: true
+    tags:
+      ignore: true
+    exceptions:
+      terminal_codes:
+        - AlreadyExists
+    hooks:
+      sdk_read_one_post_request:
+        template_path: hooks/receipt_rule_set/sdk_read_one_post_request.go.tpl
+
   CustomVerificationEmailTemplate:
     fields:
       TemplateName:

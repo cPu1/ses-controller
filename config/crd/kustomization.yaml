@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - common
   - bases/ses.services.k8s.aws_customverificationemailtemplates.yaml
+  - bases/ses.services.k8s.aws_receiptrulesets.yaml

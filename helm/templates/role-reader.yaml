@@ -10,6 +10,7 @@ rules:
   - ses.services.k8s.aws
   resources:
   - customverificationemailtemplates
+  - receiptrulesets
   verbs:
   - get
   - list
