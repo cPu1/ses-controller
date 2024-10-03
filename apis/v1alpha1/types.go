@@ -27,3 +27,23 @@ var (
 	_ = &aws.JSONValue{}
 	_ = ackv1alpha1.AWSAccountID("")
 )
+
+// Contains information about a custom verification email template.
+type CustomVerificationEmailTemplate_SDK struct {
+	FailureRedirectionURL *string `json:"failureRedirectionURL,omitempty"`
+	FromEmailAddress      *string `json:"fromEmailAddress,omitempty"`
+	SuccessRedirectionURL *string `json:"successRedirectionURL,omitempty"`
+	TemplateName          *string `json:"templateName,omitempty"`
+	TemplateSubject       *string `json:"templateSubject,omitempty"`
+}
+
+// The content of the email, composed of a subject line and either an HTML part
+// or a text-only part.
+type Template struct {
+	TemplateName *string `json:"templateName,omitempty"`
+}
+
+// Contains information about an email template.
+type TemplateMetadata struct {
+	Name *string `json:"name,omitempty"`
+}
