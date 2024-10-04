@@ -62,6 +62,37 @@ type BouncedRecipientInfo struct {
 	RecipientARN *string `json:"recipientARN,omitempty"`
 }
 
+// Contains information associated with an Amazon CloudWatch event destination
+// to which email sending events are published.
+//
+// Event destinations, such as Amazon CloudWatch, are associated with configuration
+// sets, which enable you to publish email sending events. For information about
+// using configuration sets, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html).
+type CloudWatchDestination struct {
+	DimensionConfigurations []*CloudWatchDimensionConfiguration `json:"dimensionConfigurations,omitempty"`
+}
+
+// Contains the dimension configuration to use when you publish email sending
+// events to Amazon CloudWatch.
+//
+// For information about publishing email sending events to Amazon CloudWatch,
+// see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html).
+type CloudWatchDimensionConfiguration struct {
+	DefaultDimensionValue *string `json:"defaultDimensionValue,omitempty"`
+	DimensionName         *string `json:"dimensionName,omitempty"`
+	DimensionValueSource  *string `json:"dimensionValueSource,omitempty"`
+}
+
+// The name of the configuration set.
+//
+// Configuration sets let you create groups of rules that you can apply to the
+// emails you send using Amazon SES. For more information about using configuration
+// sets, see Using Amazon SES Configuration Sets (https://docs.aws.amazon.com/ses/latest/dg/using-configuration-sets.html)
+// in the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/dg/).
+type ConfigurationSet_SDK struct {
+	Name *string `json:"name,omitempty"`
+}
+
 // Contains information about a custom verification email template.
 type CustomVerificationEmailTemplate_SDK struct {
 	FailureRedirectionURL *string `json:"failureRedirectionURL,omitempty"`
@@ -88,7 +119,31 @@ type DeliveryOptions struct {
 // or Amazon Simple Notification Service (Amazon SNS). For information about
 // using configuration sets, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html).
 type EventDestination struct {
-	Enabled *bool `json:"enabled,omitempty"`
+	// Contains information associated with an Amazon CloudWatch event destination
+	// to which email sending events are published.
+	//
+	// Event destinations, such as Amazon CloudWatch, are associated with configuration
+	// sets, which enable you to publish email sending events. For information about
+	// using configuration sets, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html).
+	CloudWatchDestination *CloudWatchDestination `json:"cloudWatchDestination,omitempty"`
+	Enabled               *bool                  `json:"enabled,omitempty"`
+	// Contains the delivery stream ARN and the IAM role ARN associated with an
+	// Amazon Kinesis Firehose event destination.
+	//
+	// Event destinations, such as Amazon Kinesis Firehose, are associated with
+	// configuration sets, which enable you to publish email sending events. For
+	// information about using configuration sets, see the Amazon SES Developer
+	// Guide (https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html).
+	KinesisFirehoseDestination *KinesisFirehoseDestination `json:"kinesisFirehoseDestination,omitempty"`
+	MatchingEventTypes         []*string                   `json:"matchingEventTypes,omitempty"`
+	Name                       *string                     `json:"name,omitempty"`
+	// Contains the topic ARN associated with an Amazon Simple Notification Service
+	// (Amazon SNS) event destination.
+	//
+	// Event destinations, such as Amazon SNS, are associated with configuration
+	// sets, which enable you to publish email sending events. For information about
+	// using configuration sets, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html).
+	SNSDestination *SNSDestination `json:"snsDestination,omitempty"`
 }
 
 // Represents the DKIM attributes of a verified email address or a domain.
@@ -263,8 +318,9 @@ type RecipientDsnFields struct {
 
 // Contains information about the reputation settings for a configuration set.
 type ReputationOptions struct {
-	ReputationMetricsEnabled *bool `json:"reputationMetricsEnabled,omitempty"`
-	SendingEnabled           *bool `json:"sendingEnabled,omitempty"`
+	LastFreshStart           *metav1.Time `json:"lastFreshStart,omitempty"`
+	ReputationMetricsEnabled *bool        `json:"reputationMetricsEnabled,omitempty"`
+	SendingEnabled           *bool        `json:"sendingEnabled,omitempty"`
 }
 
 // When included in a receipt rule, this action saves the received message to
@@ -349,6 +405,17 @@ type Template struct {
 type TemplateMetadata struct {
 	CreatedTimestamp *metav1.Time `json:"createdTimestamp,omitempty"`
 	Name             *string      `json:"name,omitempty"`
+}
+
+// A domain that is used to redirect email recipients to an Amazon SES-operated
+// domain. This domain captures open and click events generated by Amazon SES
+// emails.
+//
+// For more information, see Configuring Custom Domains to Handle Open and Click
+// Tracking (https://docs.aws.amazon.com/ses/latest/dg/configure-custom-open-click-domains.html)
+// in the Amazon SES Developer Guide.
+type TrackingOptions struct {
+	CustomRedirectDomain *string `json:"customRedirectDomain,omitempty"`
 }
 
 // When included in a receipt rule, this action calls Amazon WorkMail and, optionally,
