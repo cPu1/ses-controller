@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.2
-  name: receiptrulesets.ses.services.k8s.aws
+  name: templates.ses.services.k8s.aws
 spec:
   group: ses.services.k8s.aws
   names:
-    kind: ReceiptRuleSet
-    listKind: ReceiptRuleSetList
-    plural: receiptrulesets
-    singular: receiptruleset
+    kind: Template
+    listKind: TemplateList
+    plural: templates
+    singular: template
   scope: Namespaced
   versions:
   - name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ReceiptRuleSet is the Schema for the ReceiptRuleSets API
+        description: Template is the Schema for the Templates API
         properties:
           apiVersion:
             description: |-
@@ -37,24 +37,23 @@ spec:
           metadata:
             type: object
           spec:
-            description: ReceiptRuleSetSpec defines the desired state of ReceiptRuleSet.
+            description: |-
+              TemplateSpec defines the desired state of Template.
+
+              The content of the email, composed of a subject line and either an HTML part
+              or a text-only part.
             properties:
-              ruleSetName:
-                description: |-
-                  The name of the rule set to create. The name must meet the following requirements:
-
-                    - Contain only ASCII letters (a-z, A-Z), numbers (0-9), underscores (_),
-                      or dashes (-).
-
-                    - Start and end with a letter or number.
-
-                    - Contain 64 characters or fewer.
+              htmlPart:
                 type: string
-            required:
-            - ruleSetName
+              name:
+                type: string
+              subjectPart:
+                type: string
+              textPart:
+                type: string
             type: object
           status:
-            description: ReceiptRuleSetStatus defines the observed state of ReceiptRuleSet
+            description: TemplateStatus defines the observed state of Template
             properties:
               ackResourceMetadata:
                 description: |-

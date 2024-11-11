@@ -55,6 +55,7 @@ rules:
   - ""
   resources:
   - configmaps
+  - secrets
   verbs:
   - get
   - list
@@ -69,37 +70,9 @@ rules:
   - list
   - watch
 - apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - get
-  - list
-  - patch
-  - watch
-- apiGroups:
   - services.k8s.aws
   resources:
   - adoptedresources
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - services.k8s.aws
-  resources:
-  - adoptedresources/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - services.k8s.aws
-  resources:
   - fieldexports
   verbs:
   - create
@@ -112,6 +85,7 @@ rules:
 - apiGroups:
   - services.k8s.aws
   resources:
+  - adoptedresources/status
   - fieldexports/status
   verbs:
   - get
@@ -121,6 +95,9 @@ rules:
   - ses.services.k8s.aws
   resources:
   - configurationsets
+  - customverificationemailtemplates
+  - receiptrulesets
+  - templates
   verbs:
   - create
   - delete
@@ -133,46 +110,9 @@ rules:
   - ses.services.k8s.aws
   resources:
   - configurationsets/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - ses.services.k8s.aws
-  resources:
-  - customverificationemailtemplates
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ses.services.k8s.aws
-  resources:
   - customverificationemailtemplates/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - ses.services.k8s.aws
-  resources:
-  - receiptrulesets
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - ses.services.k8s.aws
-  resources:
   - receiptrulesets/status
+  - templates/status
   verbs:
   - get
   - patch

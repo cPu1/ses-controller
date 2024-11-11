@@ -6,9 +6,10 @@ ignore:
     - ReceiptFilter
     - ReceiptRule
 #    - ReceiptRuleSet
-    - Template
+#    - Template
   field_paths:
   - CreateConfigurationSetInput.ConfigurationSet
+  - CreateTemplateInput.Template
 model_name: email
 
 resources:
@@ -30,6 +31,7 @@ resources:
     fields:
       TemplateName:
         is_primary_key: true
+        is_immutable: true
     tags:
       ignore: true
     exceptions:
@@ -44,6 +46,7 @@ resources:
     fields:
       Name:
         is_primary_key: true
+        is_immutable: true
         type: string
     renames:
       operations:
@@ -60,3 +63,39 @@ resources:
         template_path: hooks/configuration_set/sdk_create_post_build_request.go.tpl
       sdk_read_one_post_request:
         template_path: hooks/receipt_rule_set/sdk_read_one_post_request.go.tpl
+
+  Template:
+    fields:
+      Name:
+        type: string
+        is_primary_key: true
+        is_immutable: true
+      HTMLPart:
+        type: string
+      SubjectPart:
+        type: string
+      TextPart:
+        type: string
+    tags:
+      ignore: true
+    exceptions:
+      terminal_codes:
+        - AlreadyExists
+        - InvalidTemplate
+    renames:
+      operations:
+        GetTemplate:
+          input_fields:
+            TemplateName: Name
+          output_fields:
+            HtmlPart: HTMLPart
+        DeleteTemplate:
+          input_fields:
+            TemplateName: Name
+    hooks:
+      sdk_create_post_build_request:
+        template_path: hooks/template/sdk_create_post_build_request.go.tpl
+      sdk_read_one_post_request:
+        template_path: hooks/template/sdk_read_one_post_request.go.tpl
+      sdk_update_post_build_request:
+        template_path: hooks/template/sdk_update_post_build_request.go.tpl

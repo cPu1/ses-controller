@@ -12,6 +12,7 @@ rules:
   - configurationsets
   - customverificationemailtemplates
   - receiptrulesets
+  - templates
   verbs:
   - create
   - delete
@@ -26,6 +27,7 @@ rules:
   - configurationsets
   - customverificationemailtemplates
   - receiptrulesets
+  - templates
   verbs:
   - get
   - patch

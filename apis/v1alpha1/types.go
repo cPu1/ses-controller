@@ -395,16 +395,19 @@ type StopAction struct {
 	TopicARN *string `json:"topicARN,omitempty"`
 }
 
-// The content of the email, composed of a subject line and either an HTML part
-// or a text-only part.
-type Template struct {
-	TemplateName *string `json:"templateName,omitempty"`
-}
-
 // Contains information about an email template.
 type TemplateMetadata struct {
 	CreatedTimestamp *metav1.Time `json:"createdTimestamp,omitempty"`
 	Name             *string      `json:"name,omitempty"`
+}
+
+// The content of the email, composed of a subject line and either an HTML part
+// or a text-only part.
+type Template_SDK struct {
+	HTMLPart     *string `json:"htmlPart,omitempty"`
+	SubjectPart  *string `json:"subjectPart,omitempty"`
+	TemplateName *string `json:"templateName,omitempty"`
+	TextPart     *string `json:"textPart,omitempty"`
 }
 
 // A domain that is used to redirect email recipients to an Amazon SES-operated
