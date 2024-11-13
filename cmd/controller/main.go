@@ -43,6 +43,7 @@ import (
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/configuration_set"
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/configuration_set_event_destination"
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/custom_verification_email_template"
+	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/receipt_rule"
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/receipt_rule_set"
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/template"
 

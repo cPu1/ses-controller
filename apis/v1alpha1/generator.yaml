@@ -4,12 +4,13 @@ ignore:
 #    - ConfigurationSetEventDestination
 #    - CustomVerificationEmailTemplate
     - ReceiptFilter
-    - ReceiptRule
+#    - ReceiptRule
 #    - ReceiptRuleSet
 #    - Template
   field_paths:
   - CreateConfigurationSetInput.ConfigurationSet
   - CreateTemplateInput.Template
+#  - CreateReceiptRuleInput.Rule.Name
 model_name: email
 
 operations:
@@ -17,6 +18,9 @@ operations:
     operation_type:
       - Get
     resource_name: ConfigurationSetEventDestination
+#  DescribeReceiptRule:
+#    output_wrapper_field_path: Rule
+#    primary_identifier_field_name: RuleSetName
 
 resources:
   ReceiptRuleSet:
@@ -139,3 +143,63 @@ resources:
         template_path: hooks/configuration_set_event_destination/sdk_read_one_post_set_output.go.tpl
       sdk_file_end:
         template_path: hooks/configuration_set_event_destination/sdk_file_end.go.tpl
+
+
+  ReceiptRule:
+    find_operation:
+      custom_method_name: customFind
+    fields:
+      Rule.Name:
+        is_immutable: true
+        is_required: true
+#      RuleName:
+#        type: string
+#        is_immutable: true
+#        is_required: true
+      #      Name:
+      #        is_immutable: true
+      #        type: string
+      #      Rule.Name:
+      #        is_immutable: true
+      RuleSetName:
+        is_primary_key: true
+        is_immutable: true
+        is_required: true
+#        type: string
+    #      Rule.Actions:
+    #        from:
+    #          operation: DescribeReceiptRule
+    #          path: Rule.Actions
+    #      Rule.Enabled:
+    #        from:
+    #          operation: DescribeReceiptRule
+    #          path: Rule.Enabled
+
+    tags:
+      ignore: true
+    exceptions:
+      terminal_codes:
+        - AlreadyExists
+#    renames:
+#      operations:
+#        CreateReceiptRule:
+#          input_fields:
+#            Rule.Name: RuleName
+#            RuleName: Rule.Name
+#        DescribeReceiptRule:
+#          input_fields:
+#            RuleName: Name
+#            Name: RuleName
+#            Name: Name
+#        DeleteReceiptRule:
+#          input_fields:
+#            RuleName: Name
+    hooks:
+      sdk_file_end:
+        template_path: hooks/receipt_rule/sdk_file_end.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/receipt_rule/sdk_delete_post_build_request.go.tpl
+#      sdk_read_one_post_set_output:
+#        template_path: hooks/receipt_rule/sdk_read_one_post_set_output.go.tpl
+#      sdk_read_one_post_request:
+#        template_path: hooks/receipt_rule/sdk_read_one_post_request.go.tpl

@@ -97,6 +97,7 @@ rules:
   - configurationseteventdestinations
   - configurationsets
   - customverificationemailtemplates
+  - receiptrules
   - receiptrulesets
   - templates
   verbs:
@@ -113,6 +114,7 @@ rules:
   - configurationseteventdestinations/status
   - configurationsets/status
   - customverificationemailtemplates/status
+  - receiptrules/status
   - receiptrulesets/status
   - templates/status
   verbs:

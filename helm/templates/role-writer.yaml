@@ -12,6 +12,7 @@ rules:
   - configurationsets
   - configurationseteventdestinations
   - customverificationemailtemplates
+  - receiptrules
   - receiptrulesets
   - templates
   verbs:
@@ -28,6 +29,7 @@ rules:
   - configurationsets
   - configurationseteventdestinations
   - customverificationemailtemplates
+  - receiptrules
   - receiptrulesets
   - templates
   verbs:
