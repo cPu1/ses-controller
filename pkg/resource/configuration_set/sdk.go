@@ -89,6 +89,11 @@ func (rm *resourceManager) sdkFind(
 	found := false
 	for _, elem := range resp.ConfigurationSets {
 		if elem.Name != nil {
+			if ko.Spec.Name != nil {
+				if *elem.Name != *ko.Spec.Name {
+					continue
+				}
+			}
 			ko.Spec.Name = elem.Name
 		} else {
 			ko.Spec.Name = nil

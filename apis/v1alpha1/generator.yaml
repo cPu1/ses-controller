@@ -3,13 +3,14 @@ ignore:
 #    - ConfigurationSet
 #    - ConfigurationSetEventDestination
 #    - CustomVerificationEmailTemplate
-    - ReceiptFilter
+#    - ReceiptFilter
 #    - ReceiptRule
 #    - ReceiptRuleSet
 #    - Template
   field_paths:
   - CreateConfigurationSetInput.ConfigurationSet
   - CreateTemplateInput.Template
+  - CreateReceiptFilterInput.Filter.Name
 #  - CreateReceiptRuleInput.Rule.Name
 model_name: email
 
@@ -18,9 +19,6 @@ operations:
     operation_type:
       - Get
     resource_name: ConfigurationSetEventDestination
-#  DescribeReceiptRule:
-#    output_wrapper_field_path: Rule
-#    primary_identifier_field_name: RuleSetName
 
 resources:
   ReceiptRuleSet:
@@ -58,6 +56,9 @@ resources:
         is_primary_key: true
         is_immutable: true
         type: string
+    list_operation:
+      match_fields:
+        - Name
     renames:
       operations:
         DescribeConfigurationSet:
@@ -180,8 +181,8 @@ resources:
     exceptions:
       terminal_codes:
         - AlreadyExists
-#    renames:
-#      operations:
+    renames:
+      operations:
 #        CreateReceiptRule:
 #          input_fields:
 #            Rule.Name: RuleName
@@ -193,7 +194,7 @@ resources:
 #            Name: Name
 #        DeleteReceiptRule:
 #          input_fields:
-#            RuleName: Name
+#            RuleName: Rule.Name
     hooks:
       sdk_file_end:
         template_path: hooks/receipt_rule/sdk_file_end.go.tpl
@@ -203,3 +204,36 @@ resources:
 #        template_path: hooks/receipt_rule/sdk_read_one_post_set_output.go.tpl
 #      sdk_read_one_post_request:
 #        template_path: hooks/receipt_rule/sdk_read_one_post_request.go.tpl
+
+  ReceiptFilter:
+    list_operation:
+      match_fields:
+        - Name
+    find_operation:
+      custom_method_name: customFind
+    fields:
+      Name:
+        is_primary_key: true
+        is_immutable: true
+        is_required: true
+        type: string
+    tags:
+      ignore: true
+    exceptions:
+      terminal_codes:
+        - AlreadyExists
+    renames:
+      operations:
+        CreateReceiptFilter:
+          input_fields:
+            Filter.Name: Name
+            Name: Filter.Name
+        DeleteReceiptFilter:
+          input_fields:
+            FilterName: Name
+    hooks:
+      sdk_file_end:
+        template_path: hooks/receipt_filter/sdk_file_end.go.tpl
+      sdk_create_post_build_request:
+        template_path: hooks/receipt_filter/sdk_create_post_build_request.go.tpl
+

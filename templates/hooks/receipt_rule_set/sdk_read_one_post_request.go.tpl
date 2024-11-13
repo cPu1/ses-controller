@@ -1,7 +1,7 @@
 	_ = resp
 	if err != nil {
-		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == svcsdk.svcsdk.ErrCodeRuleDoesNotExistException {
-			rm.metrics.RecordAPICall("READ_ONE", "DescribeReceiptRule", err)
+		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == svcsdk.ErrCodeRuleSetDoesNotExistException {
+			rm.metrics.RecordAPICall("READ_ONE", "DescribeReceiptRuleSet", err)
 			return nil, ackerr.NotFound
 		}
 	}
