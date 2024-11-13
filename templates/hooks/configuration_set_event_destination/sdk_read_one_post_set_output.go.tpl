@@ -1,0 +1,1 @@
+    setEventDestinations(ko, resp)

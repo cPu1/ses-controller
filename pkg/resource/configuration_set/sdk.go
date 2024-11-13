@@ -64,30 +64,18 @@ func (rm *resourceManager) sdkFind(
 	// If any required fields in the input shape are missing, AWS resource is
 	// not created yet. Return NotFound here to indicate to callers that the
 	// resource isn't yet created.
-	if rm.requiredFieldsMissingFromReadOneInput(r) {
+	if rm.requiredFieldsMissingFromReadManyInput(r) {
 		return nil, ackerr.NotFound
 	}
 
-	input, err := rm.newDescribeRequestPayload(r)
+	input, err := rm.newListRequestPayload(r)
 	if err != nil {
 		return nil, err
 	}
-
-	var resp *svcsdk.DescribeConfigurationSetOutput
-	resp, err = rm.sdkapi.DescribeConfigurationSetWithContext(ctx, input)
-	_ = resp
+	var resp *svcsdk.ListConfigurationSetsOutput
+	resp, err = rm.sdkapi.ListConfigurationSetsWithContext(ctx, input)
+	rm.metrics.RecordAPICall("READ_MANY", "ListConfigurationSets", err)
 	if err != nil {
-		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == svcsdk.ErrCodeConfigurationSetDoesNotExistException {
-			rm.metrics.RecordAPICall("READ_ONE", "DescribeReceiptRuleSet", err)
-			return nil, ackerr.NotFound
-		}
-	}
-
-	rm.metrics.RecordAPICall("READ_ONE", "DescribeConfigurationSet", err)
-	if err != nil {
-		if reqErr, ok := ackerr.AWSRequestFailure(err); ok && reqErr.StatusCode() == 404 {
-			return nil, ackerr.NotFound
-		}
 		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == "UNKNOWN" {
 			return nil, ackerr.NotFound
 		}
@@ -98,30 +86,39 @@ func (rm *resourceManager) sdkFind(
 	// the original Kubernetes object we passed to the function
 	ko := r.ko.DeepCopy()
 
+	found := false
+	for _, elem := range resp.ConfigurationSets {
+		if elem.Name != nil {
+			ko.Spec.Name = elem.Name
+		} else {
+			ko.Spec.Name = nil
+		}
+		found = true
+		break
+	}
+	if !found {
+		return nil, ackerr.NotFound
+	}
+
 	rm.setStatusDefaults(ko)
 	return &resource{ko}, nil
 }
 
-// requiredFieldsMissingFromReadOneInput returns true if there are any fields
-// for the ReadOne Input shape that are required but not present in the
+// requiredFieldsMissingFromReadManyInput returns true if there are any fields
+// for the ReadMany Input shape that are required but not present in the
 // resource's Spec or Status
-func (rm *resourceManager) requiredFieldsMissingFromReadOneInput(
+func (rm *resourceManager) requiredFieldsMissingFromReadManyInput(
 	r *resource,
 ) bool {
-	return r.ko.Spec.Name == nil
-
+	return false
 }
 
-// newDescribeRequestPayload returns SDK-specific struct for the HTTP request
-// payload of the Describe API call for the resource
-func (rm *resourceManager) newDescribeRequestPayload(
+// newListRequestPayload returns SDK-specific struct for the HTTP request
+// payload of the List API call for the resource
+func (rm *resourceManager) newListRequestPayload(
 	r *resource,
-) (*svcsdk.DescribeConfigurationSetInput, error) {
-	res := &svcsdk.DescribeConfigurationSetInput{}
-
-	if r.ko.Spec.Name != nil {
-		res.SetConfigurationSetName(*r.ko.Spec.Name)
-	}
+) (*svcsdk.ListConfigurationSetsInput, error) {
+	res := &svcsdk.ListConfigurationSetsInput{}
 
 	return res, nil
 }
@@ -319,4 +316,16 @@ func (rm *resourceManager) updateConditions(
 func (rm *resourceManager) terminalAWSError(err error) bool {
 	// No terminal_errors specified for this resource in generator config
 	return false
+}
+
+// getImmutableFieldChanges returns list of immutable fields from the
+func (rm *resourceManager) getImmutableFieldChanges(
+	delta *ackcompare.Delta,
+) []string {
+	var fields []string
+	if delta.DifferentAt("Spec.Name") {
+		fields = append(fields, "Name")
+	}
+
+	return fields
 }

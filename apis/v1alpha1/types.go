@@ -376,6 +376,8 @@ type SNSAction struct {
 // using configuration sets, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/dg/monitor-sending-activity.html).
 type SNSDestination struct {
 	TopicARN *string `json:"topicARN,omitempty"`
+	// Reference field for TopicARN
+	TopicRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"topicRef,omitempty"`
 }
 
 // Represents sending statistics data. Each SendDataPoint contains statistics
