@@ -266,6 +266,18 @@ type ReceiptAction struct {
 	WorkmailAction *WorkmailAction `json:"workmailAction,omitempty"`
 }
 
+// Information about a receipt rule set.
+//
+// A receipt rule set is a collection of rules that specify what Amazon SES
+// should do with mail it receives on behalf of your account's verified domains.
+//
+// For information about setting up receipt rule sets, see the Amazon SES Developer
+// Guide (https://docs.aws.amazon.com/ses/latest/dg/receiving-email-concepts.html#receiving-email-concepts-rules).
+type ReceiptRuleSetMetadata struct {
+	CreatedTimestamp *metav1.Time `json:"createdTimestamp,omitempty"`
+	Name             *string      `json:"name,omitempty"`
+}
+
 // Receipt rules enable you to specify which actions Amazon SES should take
 // when it receives mail on behalf of one or more email addresses or domains
 // that you own.
@@ -277,25 +289,13 @@ type ReceiptAction struct {
 //
 // For information about setting up receipt rules, see the Amazon SES Developer
 // Guide (https://docs.aws.amazon.com/ses/latest/dg/receiving-email-receipt-rules-console-walkthrough.html).
-type ReceiptRule struct {
+type ReceiptRule_SDK struct {
 	Actions     []*ReceiptAction `json:"actions,omitempty"`
 	Enabled     *bool            `json:"enabled,omitempty"`
 	Name        *string          `json:"name,omitempty"`
 	Recipients  []*string        `json:"recipients,omitempty"`
 	ScanEnabled *bool            `json:"scanEnabled,omitempty"`
 	TLSPolicy   *string          `json:"tlsPolicy,omitempty"`
-}
-
-// Information about a receipt rule set.
-//
-// A receipt rule set is a collection of rules that specify what Amazon SES
-// should do with mail it receives on behalf of your account's verified domains.
-//
-// For information about setting up receipt rule sets, see the Amazon SES Developer
-// Guide (https://docs.aws.amazon.com/ses/latest/dg/receiving-email-concepts.html#receiving-email-concepts-rules).
-type ReceiptRuleSetMetadata struct {
-	CreatedTimestamp *metav1.Time `json:"createdTimestamp,omitempty"`
-	Name             *string      `json:"name,omitempty"`
 }
 
 // Recipient-related information to include in the Delivery Status Notification

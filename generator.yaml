@@ -4,7 +4,7 @@ ignore:
   - ConfigurationSetEventDestination
   - CustomVerificationEmailTemplate
   - ReceiptFilter
-  - ReceiptRule
+#  - ReceiptRule
 #  - ReceiptRuleSet
   - Template
 
@@ -60,3 +60,32 @@ resources:
     hooks:
       sdk_read_one_post_request:
         template_path: hooks/receipt_rule_set/sdk_read_one_post_request.go.tpl
+
+  ReceiptRule:
+    find_operation:
+      custom_method_name: customFind
+    fields:
+      Rule.Name:
+        is_immutable: true
+        is_required: true
+      RuleSetName:
+        is_primary_key: true
+        is_immutable: true
+        is_required: true
+        references:
+          resource: ReceiptRuleSet
+          path: Spec.RuleSetName
+    tags:
+      ignore: true
+    exceptions:
+      terminal_codes:
+        - AlreadyExists
+        - InvalidLambdaFunction
+        - InvalidS3Configuration
+        - InvalidSnsTopic
+        - RuleSetDoesNotExist
+    hooks:
+      sdk_file_end:
+        template_path: hooks/receipt_rule/sdk_file_end.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/receipt_rule/sdk_delete_post_build_request.go.tpl

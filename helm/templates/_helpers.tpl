@@ -95,6 +95,7 @@ rules:
   - ses.services.k8s.aws
   resources:
   - configurationsets
+  - receiptrules
   - receiptrulesets
   verbs:
   - create
@@ -108,6 +109,7 @@ rules:
   - ses.services.k8s.aws
   resources:
   - configurationsets/status
+  - receiptrules/status
   - receiptrulesets/status
   verbs:
   - get
