@@ -46,6 +46,23 @@ spec:
                   The name of the configuration set that the event destination should be associated
                   with.
                 type: string
+              configurationSetRef:
+                description: "AWSResourceReferenceWrapper provides a wrapper around
+                  *AWSResourceReference\ntype to provide more user friendly syntax
+                  for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t
+                  \ name: my-api"
+                properties:
+                  from:
+                    description: |-
+                      AWSResourceReference provides all the values necessary to reference another
+                      k8s resource for finding the identifier(Id/ARN/Name)
+                    properties:
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                type: object
               eventDestination:
                 description: |-
                   An object that describes the Amazon Web Services service that email sending
@@ -129,7 +146,6 @@ spec:
                     type: object
                 type: object
             required:
-            - configurationSetName
             - eventDestination
             type: object
           status:

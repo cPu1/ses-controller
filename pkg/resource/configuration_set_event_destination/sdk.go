@@ -61,6 +61,10 @@ func (rm *resourceManager) sdkFind(
 	defer func() {
 		exit(err)
 	}()
+	if r.ko.Spec.EventDestination == nil || r.ko.Spec.EventDestination.Name == nil {
+		return nil, ackerr.NotFound
+	}
+
 	// If any required fields in the input shape are missing, AWS resource is
 	// not created yet. Return NotFound here to indicate to callers that the
 	// resource isn't yet created.
@@ -100,7 +104,11 @@ func (rm *resourceManager) sdkFind(
 	ko := r.ko.DeepCopy()
 
 	rm.setStatusDefaults(ko)
-	setEventDestinations(ko, resp)
+	eventDestination := getEventDestination(ko, resp)
+	if eventDestination == nil {
+		return nil, ackerr.NotFound
+	}
+	ko.Spec.EventDestination = eventDestination
 
 	return &resource{ko}, nil
 }
@@ -246,6 +254,10 @@ func (rm *resourceManager) sdkUpdate(
 	defer func() {
 		exit(err)
 	}()
+	if immutableFieldChanges := rm.getImmutableFieldChanges(delta); len(immutableFieldChanges) > 0 {
+		msg := fmt.Sprintf("Immutable Spec fields have been modified: %s", strings.Join(immutableFieldChanges, ","))
+		return nil, ackerr.NewTerminalError(fmt.Errorf(msg))
+	}
 	input, err := rm.newUpdateRequestPayload(ctx, desired, delta)
 	if err != nil {
 		return nil, err
@@ -353,6 +365,10 @@ func (rm *resourceManager) sdkDelete(
 	if err != nil {
 		return nil, err
 	}
+	if eventDestination := r.ko.Spec.EventDestination; eventDestination != nil {
+		input.EventDestinationName = eventDestination.Name
+	}
+
 	var resp *svcsdk.DeleteConfigurationSetEventDestinationOutput
 	_ = resp
 	resp, err = rm.sdkapi.DeleteConfigurationSetEventDestinationWithContext(ctx, input)
@@ -491,6 +507,21 @@ func (rm *resourceManager) terminalAWSError(err error) bool {
 	default:
 		return false
 	}
+}
+
+// getImmutableFieldChanges returns list of immutable fields from the
+func (rm *resourceManager) getImmutableFieldChanges(
+	delta *ackcompare.Delta,
+) []string {
+	var fields []string
+	if delta.DifferentAt("Spec.ConfigurationSetName") {
+		fields = append(fields, "ConfigurationSetName")
+	}
+	if delta.DifferentAt("Spec.EventDestination.Name") {
+		fields = append(fields, "EventDestination.Name")
+	}
+
+	return fields
 }
 
 // setEventDestination sets a resource EventDestination type

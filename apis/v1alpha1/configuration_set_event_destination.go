@@ -25,8 +25,8 @@ type ConfigurationSetEventDestinationSpec struct {
 
 	// The name of the configuration set that the event destination should be associated
 	// with.
-	// +kubebuilder:validation:Required
-	ConfigurationSetName *string `json:"configurationSetName"`
+	ConfigurationSetName *string                                  `json:"configurationSetName,omitempty"`
+	ConfigurationSetRef  *ackv1alpha1.AWSResourceReferenceWrapper `json:"configurationSetRef,omitempty"`
 	// An object that describes the Amazon Web Services service that email sending
 	// event where information is published.
 	// +kubebuilder:validation:Required

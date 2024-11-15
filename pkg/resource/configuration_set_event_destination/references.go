@@ -41,6 +41,10 @@ import (
 func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) acktypes.AWSResource {
 	ko := rm.concreteResource(res).ko.DeepCopy()
 
+	if ko.Spec.ConfigurationSetRef != nil {
+		ko.Spec.ConfigurationSetName = nil
+	}
+
 	if ko.Spec.EventDestination != nil {
 		if ko.Spec.EventDestination.SNSDestination != nil {
 			if ko.Spec.EventDestination.SNSDestination.TopicRef != nil {
@@ -68,6 +72,12 @@ func (rm *resourceManager) ResolveReferences(
 
 	resourceHasReferences := false
 	err := validateReferenceFields(ko)
+	if fieldHasReferences, err := rm.resolveReferenceForConfigurationSetName(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
 	if fieldHasReferences, err := rm.resolveReferenceForEventDestination_SNSDestination_TopicARN(ctx, apiReader, ko); err != nil {
 		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
 	} else {
@@ -81,6 +91,13 @@ func (rm *resourceManager) ResolveReferences(
 // identifier field.
 func validateReferenceFields(ko *svcapitypes.ConfigurationSetEventDestination) error {
 
+	if ko.Spec.ConfigurationSetRef != nil && ko.Spec.ConfigurationSetName != nil {
+		return ackerr.ResourceReferenceAndIDNotSupportedFor("ConfigurationSetName", "ConfigurationSetRef")
+	}
+	if ko.Spec.ConfigurationSetRef == nil && ko.Spec.ConfigurationSetName == nil {
+		return ackerr.ResourceReferenceOrIDRequiredFor("ConfigurationSetName", "ConfigurationSetRef")
+	}
+
 	if ko.Spec.EventDestination != nil {
 		if ko.Spec.EventDestination.SNSDestination != nil {
 			if ko.Spec.EventDestination.SNSDestination.TopicRef != nil && ko.Spec.EventDestination.SNSDestination.TopicARN != nil {
@@ -90,6 +107,89 @@ func validateReferenceFields(ko *svcapitypes.ConfigurationSetEventDestination) e
 				return ackerr.ResourceReferenceOrIDRequiredFor("TopicARN", "TopicRef")
 			}
 		}
+	}
+	return nil
+}
+
+// resolveReferenceForConfigurationSetName reads the resource referenced
+// from ConfigurationSetRef field and sets the ConfigurationSetName
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForConfigurationSetName(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.ConfigurationSetEventDestination,
+) (hasReferences bool, err error) {
+	if ko.Spec.ConfigurationSetRef != nil && ko.Spec.ConfigurationSetRef.From != nil {
+		hasReferences = true
+		arr := ko.Spec.ConfigurationSetRef.From
+		if arr.Name == nil || *arr.Name == "" {
+			return hasReferences, fmt.Errorf("provided resource reference is nil or empty: ConfigurationSetRef")
+		}
+		namespace := ko.ObjectMeta.GetNamespace()
+		if arr.Namespace != nil && *arr.Namespace != "" {
+			namespace = *arr.Namespace
+		}
+		obj := &svcapitypes.ConfigurationSet{}
+		if err := getReferencedResourceState_ConfigurationSet(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+			return hasReferences, err
+		}
+		ko.Spec.ConfigurationSetName = (*string)(obj.Spec.Name)
+	}
+
+	return hasReferences, nil
+}
+
+// getReferencedResourceState_ConfigurationSet looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_ConfigurationSet(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *svcapitypes.ConfigurationSet,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
+			return ackerr.ResourceReferenceTerminalFor(
+				"ConfigurationSet",
+				namespace, name)
+		}
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"ConfigurationSet",
+			namespace, name)
+	}
+	var refResourceSynced bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
+		}
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"ConfigurationSet",
+			namespace, name)
+	}
+	if obj.Spec.Name == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"ConfigurationSet",
+			namespace, name,
+			"Spec.Name")
 	}
 	return nil
 }

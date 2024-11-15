@@ -26,6 +26,8 @@ resources:
       RuleSetName:
         is_primary_key: true
         is_immutable: true
+    update_operation:
+      custom_method_name: customUpdate
     tags:
       ignore: true
     exceptions:
@@ -40,6 +42,9 @@ resources:
       TemplateName:
         is_primary_key: true
         is_immutable: true
+        references:
+          resource: Template
+          path: Spec.Name
     tags:
       ignore: true
     exceptions:
@@ -59,6 +64,8 @@ resources:
     list_operation:
       match_fields:
         - Name
+    update_operation:
+      custom_method_name: customUpdate
     renames:
       operations:
         DescribeConfigurationSet:
@@ -115,8 +122,13 @@ resources:
     fields:
       ConfigurationSetName:
         is_primary_key: true
+        is_immutable: true
+        references:
+          resource: ConfigurationSet
+          path: Spec.Name
       EventDestination.Name:
         is_required: true
+        is_immutable: true
       EventDestination.MatchingEventTypes:
         is_required: true
       EventDestination.SNSDestination.TopicARN:
@@ -138,10 +150,14 @@ resources:
     hooks:
       sdk_read_one_post_request:
         template_path: hooks/configuration_set_event_destination/sdk_read_one_post_request.go.tpl
+      sdk_read_one_pre_build_request:
+        template_path: hooks/configuration_set_event_destination/sdk_read_one_pre_build_request.go.tpl
       sdk_read_one_post_build_request:
         template_path: hooks/configuration_set_event_destination/sdk_read_one_post_build_request.go.tpl
       sdk_read_one_post_set_output:
         template_path: hooks/configuration_set_event_destination/sdk_read_one_post_set_output.go.tpl
+      sdk_delete_post_build_request:
+        template_path: hooks/configuration_set_event_destination/sdk_delete_post_build_request.go.tpl
       sdk_file_end:
         template_path: hooks/configuration_set_event_destination/sdk_file_end.go.tpl
 
@@ -166,6 +182,9 @@ resources:
         is_primary_key: true
         is_immutable: true
         is_required: true
+        references:
+          resource: ReceiptRuleSet
+          path: Spec.RuleSetName
 #        type: string
     #      Rule.Actions:
     #        from:
@@ -175,7 +194,6 @@ resources:
     #        from:
     #          operation: DescribeReceiptRule
     #          path: Rule.Enabled
-
     tags:
       ignore: true
     exceptions:
@@ -211,12 +229,18 @@ resources:
         - Name
     find_operation:
       custom_method_name: customFind
+    update_operation:
+      custom_method_name: customUpdate
     fields:
       Name:
         is_primary_key: true
         is_immutable: true
         is_required: true
         type: string
+      Filter.IPFilter.CIDR:
+        is_immutable: true
+      Filter.IPFilter.Policy:
+        is_immutable: true
     tags:
       ignore: true
     exceptions:
@@ -236,4 +260,5 @@ resources:
         template_path: hooks/receipt_filter/sdk_file_end.go.tpl
       sdk_create_post_build_request:
         template_path: hooks/receipt_filter/sdk_create_post_build_request.go.tpl
-
+      sdk_read_many_post_request:
+        template_path: hooks/receipt_filter/sdk_read_many_post_request.go.tpl

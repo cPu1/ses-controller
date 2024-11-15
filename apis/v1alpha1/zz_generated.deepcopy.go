@@ -264,6 +264,11 @@ func (in *ConfigurationSetEventDestinationSpec) DeepCopyInto(out *ConfigurationS
 		*out = new(string)
 		**out = **in
 	}
+	if in.ConfigurationSetRef != nil {
+		in, out := &in.ConfigurationSetRef, &out.ConfigurationSetRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.EventDestination != nil {
 		in, out := &in.EventDestination, &out.EventDestination
 		*out = new(EventDestination)
@@ -501,6 +506,11 @@ func (in *CustomVerificationEmailTemplateSpec) DeepCopyInto(out *CustomVerificat
 		in, out := &in.TemplateName, &out.TemplateName
 		*out = new(string)
 		**out = **in
+	}
+	if in.TemplateRef != nil {
+		in, out := &in.TemplateRef, &out.TemplateRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.TemplateSubject != nil {
 		in, out := &in.TemplateSubject, &out.TemplateSubject
@@ -1191,6 +1201,11 @@ func (in *ReceiptRuleSpec) DeepCopyInto(out *ReceiptRuleSpec) {
 		in, out := &in.RuleSetName, &out.RuleSetName
 		*out = new(string)
 		**out = **in
+	}
+	if in.RuleSetRef != nil {
+		in, out := &in.RuleSetRef, &out.RuleSetRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 }
 

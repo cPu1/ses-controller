@@ -132,7 +132,7 @@ func (rm *resourceManager) sdkUpdate(
 	latest *resource,
 	delta *ackcompare.Delta,
 ) (*resource, error) {
-	return nil, ackerr.NewTerminalError(ackerr.NotImplemented)
+	return rm.customUpdate(ctx, desired, latest, delta)
 }
 
 // sdkDelete deletes the supplied resource in the backend AWS service API
@@ -289,6 +289,12 @@ func (rm *resourceManager) getImmutableFieldChanges(
 	delta *ackcompare.Delta,
 ) []string {
 	var fields []string
+	if delta.DifferentAt("Spec.Filter.IPFilter.CIDR") {
+		fields = append(fields, "Filter.IPFilter.CIDR")
+	}
+	if delta.DifferentAt("Spec.Filter.IPFilter.Policy") {
+		fields = append(fields, "Filter.IPFilter.Policy")
+	}
 	if delta.DifferentAt("Spec.Name") {
 		fields = append(fields, "Name")
 	}

@@ -103,6 +103,9 @@ func newResourceDelta(
 			delta.Add("Spec.RuleSetName", a.ko.Spec.RuleSetName, b.ko.Spec.RuleSetName)
 		}
 	}
+	if !reflect.DeepEqual(a.ko.Spec.RuleSetRef, b.ko.Spec.RuleSetRef) {
+		delta.Add("Spec.RuleSetRef", a.ko.Spec.RuleSetRef, b.ko.Spec.RuleSetRef)
+	}
 
 	return delta
 }

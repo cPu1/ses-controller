@@ -68,6 +68,23 @@ spec:
               templateName:
                 description: The name of the custom verification email template.
                 type: string
+              templateRef:
+                description: "AWSResourceReferenceWrapper provides a wrapper around
+                  *AWSResourceReference\ntype to provide more user friendly syntax
+                  for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t
+                  \ name: my-api"
+                properties:
+                  from:
+                    description: |-
+                      AWSResourceReference provides all the values necessary to reference another
+                      k8s resource for finding the identifier(Id/ARN/Name)
+                    properties:
+                      name:
+                        type: string
+                      namespace:
+                        type: string
+                    type: object
+                type: object
               templateSubject:
                 description: The subject line of the custom verification email.
                 type: string
@@ -76,7 +93,6 @@ spec:
             - fromEmailAddress
             - successRedirectionURL
             - templateContent
-            - templateName
             - templateSubject
             type: object
           status:

@@ -78,6 +78,9 @@ func newResourceDelta(
 			delta.Add("Spec.TemplateName", a.ko.Spec.TemplateName, b.ko.Spec.TemplateName)
 		}
 	}
+	if !reflect.DeepEqual(a.ko.Spec.TemplateRef, b.ko.Spec.TemplateRef) {
+		delta.Add("Spec.TemplateRef", a.ko.Spec.TemplateRef, b.ko.Spec.TemplateRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.TemplateSubject, b.ko.Spec.TemplateSubject) {
 		delta.Add("Spec.TemplateSubject", a.ko.Spec.TemplateSubject, b.ko.Spec.TemplateSubject)
 	} else if a.ko.Spec.TemplateSubject != nil && b.ko.Spec.TemplateSubject != nil {

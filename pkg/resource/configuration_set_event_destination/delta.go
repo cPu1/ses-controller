@@ -50,6 +50,9 @@ func newResourceDelta(
 			delta.Add("Spec.ConfigurationSetName", a.ko.Spec.ConfigurationSetName, b.ko.Spec.ConfigurationSetName)
 		}
 	}
+	if !reflect.DeepEqual(a.ko.Spec.ConfigurationSetRef, b.ko.Spec.ConfigurationSetRef) {
+		delta.Add("Spec.ConfigurationSetRef", a.ko.Spec.ConfigurationSetRef, b.ko.Spec.ConfigurationSetRef)
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.EventDestination, b.ko.Spec.EventDestination) {
 		delta.Add("Spec.EventDestination", a.ko.Spec.EventDestination, b.ko.Spec.EventDestination)
 	} else if a.ko.Spec.EventDestination != nil && b.ko.Spec.EventDestination != nil {

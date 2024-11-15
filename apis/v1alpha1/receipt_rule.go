@@ -44,8 +44,8 @@ type ReceiptRuleSpec struct {
 	// +kubebuilder:validation:Required
 	Rule *ReceiptRule_SDK `json:"rule"`
 	// The name of the rule set where the receipt rule is added.
-	// +kubebuilder:validation:Required
-	RuleSetName *string `json:"ruleSetName"`
+	RuleSetName *string                                  `json:"ruleSetName,omitempty"`
+	RuleSetRef  *ackv1alpha1.AWSResourceReferenceWrapper `json:"ruleSetRef,omitempty"`
 }
 
 // ReceiptRuleStatus defines the observed state of ReceiptRule

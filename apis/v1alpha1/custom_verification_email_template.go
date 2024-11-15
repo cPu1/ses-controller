@@ -44,8 +44,8 @@ type CustomVerificationEmailTemplateSpec struct {
 	// +kubebuilder:validation:Required
 	TemplateContent *string `json:"templateContent"`
 	// The name of the custom verification email template.
-	// +kubebuilder:validation:Required
-	TemplateName *string `json:"templateName"`
+	TemplateName *string                                  `json:"templateName,omitempty"`
+	TemplateRef  *ackv1alpha1.AWSResourceReferenceWrapper `json:"templateRef,omitempty"`
 	// The subject line of the custom verification email.
 	// +kubebuilder:validation:Required
 	TemplateSubject *string `json:"templateSubject"`
