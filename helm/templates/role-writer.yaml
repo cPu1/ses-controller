@@ -11,6 +11,7 @@ rules:
   resources:
   - configurationsets
   - configurationseteventdestinations
+  - customverificationemailtemplates
   - receiptfilters
   - receiptrules
   - receiptrulesets
@@ -28,6 +29,7 @@ rules:
   resources:
   - configurationsets
   - configurationseteventdestinations
+  - customverificationemailtemplates
   - receiptfilters
   - receiptrules
   - receiptrulesets

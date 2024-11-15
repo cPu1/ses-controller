@@ -94,8 +94,12 @@ type ConfigurationSet_SDK struct {
 }
 
 // Contains information about a custom verification email template.
-type CustomVerificationEmailTemplate struct {
-	TemplateName *string `json:"templateName,omitempty"`
+type CustomVerificationEmailTemplate_SDK struct {
+	FailureRedirectionURL *string `json:"failureRedirectionURL,omitempty"`
+	FromEmailAddress      *string `json:"fromEmailAddress,omitempty"`
+	SuccessRedirectionURL *string `json:"successRedirectionURL,omitempty"`
+	TemplateName          *string `json:"templateName,omitempty"`
+	TemplateSubject       *string `json:"templateSubject,omitempty"`
 }
 
 // Specifies whether messages that use the configuration set are required to

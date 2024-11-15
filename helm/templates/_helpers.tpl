@@ -96,6 +96,7 @@ rules:
   resources:
   - configurationseteventdestinations
   - configurationsets
+  - customverificationemailtemplates
   - receiptfilters
   - receiptrules
   - receiptrulesets
@@ -113,6 +114,7 @@ rules:
   resources:
   - configurationseteventdestinations/status
   - configurationsets/status
+  - customverificationemailtemplates/status
   - receiptfilters/status
   - receiptrules/status
   - receiptrulesets/status
