@@ -271,6 +271,30 @@ type ReceiptAction struct {
 	WorkmailAction *WorkmailAction `json:"workmailAction,omitempty"`
 }
 
+// A receipt IP address filter enables you to specify whether to accept or reject
+// mail originating from an IP address or range of IP addresses.
+//
+// For information about setting up IP address filters, see the Amazon SES Developer
+// Guide (https://docs.aws.amazon.com/ses/latest/dg/receiving-email-ip-filtering-console-walkthrough.html).
+type ReceiptFilter_SDK struct {
+	// A receipt IP address filter enables you to specify whether to accept or reject
+	// mail originating from an IP address or range of IP addresses.
+	//
+	// For information about setting up IP address filters, see the Amazon SES Developer
+	// Guide (https://docs.aws.amazon.com/ses/latest/dg/receiving-email-ip-filtering-console-walkthrough.html).
+	IPFilter *ReceiptIPFilter `json:"ipFilter,omitempty"`
+}
+
+// A receipt IP address filter enables you to specify whether to accept or reject
+// mail originating from an IP address or range of IP addresses.
+//
+// For information about setting up IP address filters, see the Amazon SES Developer
+// Guide (https://docs.aws.amazon.com/ses/latest/dg/receiving-email-ip-filtering-console-walkthrough.html).
+type ReceiptIPFilter struct {
+	CIDR   *string `json:"cidr,omitempty"`
+	Policy *string `json:"policy,omitempty"`
+}
+
 // Information about a receipt rule set.
 //
 // A receipt rule set is a collection of rules that specify what Amazon SES

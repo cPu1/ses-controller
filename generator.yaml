@@ -3,7 +3,7 @@ ignore:
 #  - ConfigurationSet
   - ConfigurationSetEventDestination
   - CustomVerificationEmailTemplate
-  - ReceiptFilter
+#  - ReceiptFilter
 #  - ReceiptRule
 #  - ReceiptRuleSet
 #  - Template
@@ -11,6 +11,7 @@ ignore:
   field_paths:
     - CreateConfigurationSetInput.ConfigurationSet
     - CreateTemplateInput.Template
+    - CreateReceiptFilterInput.Filter.Name
 model_name: email
 
 resources:
@@ -125,3 +126,43 @@ resources:
         template_path: hooks/template/sdk_read_one_post_request.go.tpl
       sdk_update_post_build_request:
         template_path: hooks/template/sdk_update_post_build_request.go.tpl
+
+  ReceiptFilter:
+    list_operation:
+      match_fields:
+        - Name
+    find_operation:
+      custom_method_name: customFind
+    update_operation:
+      custom_method_name: customUpdate
+    fields:
+      Name:
+        is_primary_key: true
+        is_immutable: true
+        is_required: true
+        type: string
+      Filter.IPFilter.CIDR:
+        is_immutable: true
+      Filter.IPFilter.Policy:
+        is_immutable: true
+    tags:
+      ignore: true
+    exceptions:
+      terminal_codes:
+        - AlreadyExists
+    renames:
+      operations:
+        CreateReceiptFilter:
+          input_fields:
+            Filter.Name: Name
+            Name: Filter.Name
+        DeleteReceiptFilter:
+          input_fields:
+            FilterName: Name
+    hooks:
+      sdk_file_end:
+        template_path: hooks/receipt_filter/sdk_file_end.go.tpl
+      sdk_create_post_build_request:
+        template_path: hooks/receipt_filter/sdk_create_post_build_request.go.tpl
+      sdk_read_many_post_request:
+        template_path: hooks/receipt_filter/sdk_read_many_post_request.go.tpl

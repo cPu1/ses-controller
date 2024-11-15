@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - common
   - bases/ses.services.k8s.aws_configurationsets.yaml
+  - bases/ses.services.k8s.aws_receiptfilters.yaml
   - bases/ses.services.k8s.aws_receiptrules.yaml
   - bases/ses.services.k8s.aws_receiptrulesets.yaml
   - bases/ses.services.k8s.aws_templates.yaml

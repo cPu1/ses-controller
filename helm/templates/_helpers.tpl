@@ -95,6 +95,7 @@ rules:
   - ses.services.k8s.aws
   resources:
   - configurationsets
+  - receiptfilters
   - receiptrules
   - receiptrulesets
   - templates
@@ -110,6 +111,7 @@ rules:
   - ses.services.k8s.aws
   resources:
   - configurationsets/status
+  - receiptfilters/status
   - receiptrules/status
   - receiptrulesets/status
   - templates/status
