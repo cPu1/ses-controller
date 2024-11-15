@@ -12,6 +12,7 @@ rules:
   - configurationsets
   - receiptrules
   - receiptrulesets
+  - templates
   verbs:
   - create
   - delete
@@ -26,6 +27,7 @@ rules:
   - configurationsets
   - receiptrules
   - receiptrulesets
+  - templates
   verbs:
   - get
   - patch

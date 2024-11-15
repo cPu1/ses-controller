@@ -42,6 +42,7 @@ import (
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/configuration_set"
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/receipt_rule"
 	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/receipt_rule_set"
+	_ "github.com/aws-controllers-k8s/ses-controller/pkg/resource/template"
 
 	"github.com/aws-controllers-k8s/ses-controller/pkg/version"
 )

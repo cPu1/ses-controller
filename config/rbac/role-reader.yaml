@@ -12,6 +12,7 @@ rules:
   - configurationsets
   - receiptrules
   - receiptrulesets
+  - templates
   verbs:
   - get
   - list

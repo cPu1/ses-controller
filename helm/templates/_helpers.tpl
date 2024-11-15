@@ -97,6 +97,7 @@ rules:
   - configurationsets
   - receiptrules
   - receiptrulesets
+  - templates
   verbs:
   - create
   - delete
@@ -111,6 +112,7 @@ rules:
   - configurationsets/status
   - receiptrules/status
   - receiptrulesets/status
+  - templates/status
   verbs:
   - get
   - patch

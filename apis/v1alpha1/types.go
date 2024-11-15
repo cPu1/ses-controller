@@ -93,6 +93,11 @@ type ConfigurationSet_SDK struct {
 	Name *string `json:"name,omitempty"`
 }
 
+// Contains information about a custom verification email template.
+type CustomVerificationEmailTemplate struct {
+	TemplateName *string `json:"templateName,omitempty"`
+}
+
 // Specifies whether messages that use the configuration set are required to
 // use Transport Layer Security (TLS).
 type DeliveryOptions struct {
@@ -389,6 +394,16 @@ type StopAction struct {
 // Contains information about an email template.
 type TemplateMetadata struct {
 	CreatedTimestamp *metav1.Time `json:"createdTimestamp,omitempty"`
+	Name             *string      `json:"name,omitempty"`
+}
+
+// The content of the email, composed of a subject line and either an HTML part
+// or a text-only part.
+type Template_SDK struct {
+	HTMLPart     *string `json:"htmlPart,omitempty"`
+	SubjectPart  *string `json:"subjectPart,omitempty"`
+	TemplateName *string `json:"templateName,omitempty"`
+	TextPart     *string `json:"textPart,omitempty"`
 }
 
 // A domain that is used to redirect email recipients to an Amazon SES-operated
