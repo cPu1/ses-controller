@@ -9,6 +9,7 @@ rules:
 - apiGroups:
   - ses.services.k8s.aws
   resources:
+  - configurationsets
   verbs:
   - create
   - delete
@@ -20,6 +21,7 @@ rules:
 - apiGroups:
   - ses.services.k8s.aws
   resources:
+  - configurationsets
   verbs:
   - get
   - patch
